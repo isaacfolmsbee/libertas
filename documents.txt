@@ -1,0 +1,129 @@
+credential document
+{
+	_id: objectID,
+	passphrase: string (hashed),
+    rsaPublic: rsapubkey,
+    rsaPrivate: rsaprivate (AES256 User Password),
+	accountReference: objectID (AES256 User Password),
+	requestReferences: [
+		objectID (user RSA public),
+	],
+}
+
+
+request document
+{
+	_id: objectID,
+	messageRequest: [
+		{
+			_id: objectID (user RSA public),
+			note: string (user RSA public),
+			recipient: objectID (user RSA public),
+			key: string (user RSA public),
+		}
+	],
+	forumRequest: [
+		{
+			_id: objectID (user RSA public),
+			name: string (user RSA public),
+			note: string (user RSA public),
+			key: string (user RSA public),
+		}
+	],
+}
+
+
+account document
+{
+	reference: random hex,
+	forums: [
+		{
+			reference: random hex (AES256 P),
+			name: string (AES256 P),
+			key: string (AES256 P),
+			alias: string (AES256 P),
+			userID: random hex (AES256 P),
+			publicKey: string (AES256 P),
+			privateKey: string (AES256 P),
+			requestReference: string (AES256 P),
+		},
+	],
+	messages: [
+		{
+			_id: objectID (AES256 P),
+			recipient: string (AES256 P),
+			key: AES key (AES256 P),
+		},
+	],
+}
+
+
+message document
+{
+	_id: objectID,
+	messages: [
+		{
+			timeStamp: time stamp (AES256 MK),
+			createdBy: string (AES256 MK),
+			message: string (AES256 MK),
+		},
+	],
+}
+
+
+forum document
+{
+	// ALL ENCRYPTION IS IF PRIVATE
+	_id: objectID,
+	public: boolean,
+	name: string (AES256 FK),
+	description: string (AES256 FK),
+	postReference: random hex (AES256 FK),????
+	moderators: [
+		{
+			userID: random hex (AES256 FK),
+			alias: string (AES256 FK),
+		},
+	],
+}
+
+
+post document
+{
+	// ALL ENCRYPTION IS IF PRIVATE
+	reference: random hex,
+	createdBy: {
+		userID: random hex (AES256 FK),
+		alias: string (AES256 FK),
+		publicKey: string (AES256 FK),
+		requestReference: string (AES256 FK),
+	},
+	title: string (AES256 FK),
+	message: string (AES256 FK),
+	votes: number (AES256 FK),
+	comments: [
+		{
+			reference: random hex (AES256 FK),
+			createdBy: {
+				userID: random hex (AES256 FK),
+				alias: string (AES256 FK),
+				publicKey: string (AES256 FK),
+				requestReference: string (AES256 FK),
+			},
+			message: string (AES256 FK),
+			votes: number (AES256 FK),
+			replies: [
+				{
+					createdBy: {
+						userID: random hex (AES256 FK),
+						alias: string (AES256 FK),
+						publicKey: string (AES256 FK),
+						requestReference: string (AES256 FK),
+					},
+					message: string (AES256 FK),
+					votes: number (AES256 FK),
+				},
+			],
+		},
+	],
+}
